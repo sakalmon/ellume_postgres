@@ -1,26 +1,35 @@
 import psycopg2
 import os
+import re
+import pandas as pd
 
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-CSV_PATH = r'C:\My Drive\Scientific & Technical\Firmware Release\EPL Production Test Results\Tests\6171-ASM-00000546_CEQ0178.csv'
+columns = list(pd.read_csv(r'C:\Users\sakal.mon\OneDrive - Ellume\Documents\Git\ellume_postgres\6171-ASM-00000546_CEQ0178.csv', header=2).columns)
+renamed_columns = []
 
-try:
-    conn = psycopg2.connect(host="127.0.0.1", database="mydb", user="postgres", port="5432", password=POSTGRES_PASSWORD)
-except:
-    print('Unable to connect')
+for column in columns:
+    matches = re.findall(r"[\s|-|.]", column)
+    for match in matches:
+        renamed_columns.append(column.replace(match, '_'))
 
-cur = conn.cursor()
+print(renamed_columns)
+# try:
+#     conn = psycopg2.connect(host="127.0.0.1", database="mydb", user="postgres",\
+#                             port="5432", password=POSTGRES_PASSWORD)
+# except:
+#     print('Unable to connect')
 
-command = """
-CREATE TABLE CEQ0178 (
-    test1 VARCHAR(50),
-    test2 VARCHAR(50),
-    test3 VARCHAR(50)
-)
-"""
+# cur = conn.cursor()
 
-cur.execute(command)
-conn.commit()
+# for column in renamed_columns:
+#     command = f"""
+#         ALTER TABLE CEQ0178
+#         ADD COLUMN {column} VARCHAR(50)
+#     """
+#     cur.execute(command)
+#     conn.commit()
 
-cur.close()
-conn.close()
+
+
+# cur.close()
+# conn.close()
