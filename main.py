@@ -7,8 +7,9 @@ POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 columns = list(pd.read_csv(r'C:\Users\sakal.mon\OneDrive - Ellume\Documents\Git\ellume_postgres\6171-ASM-00000546_CEQ0178.csv', header=2).columns)
 renamed_columns = []
 
+pattern = re.compile(r'-|\s|[.]')
 for column in columns:
-    matches = re.findall(r"[\s|-|.]", column)
+    matches = pattern.finditer(column)
     for match in matches:
         renamed_columns.append(column.replace(match, '_'))
 
