@@ -4,15 +4,17 @@ import re
 import pandas as pd
 
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-columns = list(pd.read_csv(r'C:\Users\sakal.mon\OneDrive - Ellume\Documents\Git\ellume_postgres\6171-ASM-00000546_CEQ0178.csv', header=2).columns)
+columns = list(pd.read_csv(r'C:\Users\sakal.mon\OneDrive - Ellume\Documents\Git\postgres\6171-ASM-00000546_CEQ0178.csv', header=2).columns)
 renamed_columns = []
 
 pattern = re.compile(r'-|\s|[.]')
-for column in columns:
-    matches = pattern.finditer(column)
-    for match in matches:
-        renamed_columns.append(column.replace(match, '_'))
 
+for i in range(2):
+    for column in columns:
+        match = pattern.search(column)
+        if match:
+            renamed_columns.append(column.replace(match.group(), '_'))
+        else: renamed_columns.append(column)
 print(renamed_columns)
 # try:
 #     conn = psycopg2.connect(host="127.0.0.1", database="mydb", user="postgres",\
