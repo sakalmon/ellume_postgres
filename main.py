@@ -20,31 +20,29 @@ for column in columns:
             temp.append(temp.pop().replace(match, '_'))
 
         renamed_columns.append(temp[0])
-        
+
     else:
         renamed_columns.append(column)
 
 print(renamed_columns)
 
+try:
+    conn = psycopg2.connect(host="127.0.0.1", database="mydb", user="postgres",\
+                            port="5432", password=POSTGRES_PASSWORD)
+except:
+    print('Unable to connect')
 
+cur = conn.cursor()
 
-# try:
-#     conn = psycopg2.connect(host="127.0.0.1", database="mydb", user="postgres",\
-#                             port="5432", password=POSTGRES_PASSWORD)
-# except:
-#     print('Unable to connect')
-
-# cur = conn.cursor()
-
-# for column in renamed_columns:
-#     command = f"""
-#         ALTER TABLE CEQ0178
-#         ADD COLUMN {column} VARCHAR(50)
-#     """
-#     cur.execute(command)
-#     conn.commit()
+for column in renamed_columns:
+    command = f"""
+        ALTER TABLE CEQ0178
+        ADD COLUMN {column} VARCHAR(50)
+    """
+    cur.execute(command)
+    conn.commit()
 
 
 
-# cur.close()
-# conn.close()
+cur.close()
+conn.close()
