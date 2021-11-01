@@ -9,13 +9,26 @@ renamed_columns = []
 
 pattern = re.compile(r'-|\s|[.]')
 
-for i in range(2):
-    for column in columns:
-        match = pattern.search(column)
-        if match:
-            renamed_columns.append(column.replace(match.group(), '_'))
-        else: renamed_columns.append(column)
+for column in columns:
+    matches = pattern.findall(column)
+    
+    if matches:
+        temp = []
+        temp.append(column.replace(matches[0], '_'))
+        for match in matches:
+            try:
+                temp.append(temp.pop().replace(match, '_'))
+
+            except IndexError:
+                print('No more to pop')
+        renamed_columns.append(temp[0])
+    else:
+        renamed_columns.append(column)
+
 print(renamed_columns)
+
+
+
 # try:
 #     conn = psycopg2.connect(host="127.0.0.1", database="mydb", user="postgres",\
 #                             port="5432", password=POSTGRES_PASSWORD)
