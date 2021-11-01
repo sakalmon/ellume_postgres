@@ -15,13 +15,12 @@ for column in columns:
     if matches:
         temp = []
         temp.append(column.replace(matches[0], '_'))
-        for match in matches:
-            try:
-                temp.append(temp.pop().replace(match, '_'))
 
-            except IndexError:
-                print('No more to pop')
+        for match in matches:
+            temp.append(temp.pop().replace(match, '_'))
+
         renamed_columns.append(temp[0])
+        
     else:
         renamed_columns.append(column)
 
