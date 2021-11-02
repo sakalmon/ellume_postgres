@@ -2,6 +2,7 @@ import psycopg2
 import os
 import re
 import pandas as pd
+from sqlalchemy import create_engine
 
 POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 columns = list(pd.read_csv(r'C:\Users\sakal.mon\OneDrive - Ellume\Documents\Git\postgres\6171-ASM-00000546_CEQ0178.csv', header=2).columns)
@@ -34,15 +35,8 @@ except:
 
 cur = conn.cursor()
 
-for column in renamed_columns:
-    command = f"""
-        ALTER TABLE CEQ0178
-        ADD COLUMN {column} VARCHAR(50)
-    """
-    cur.execute(command)
-    conn.commit()
+engine = create_engine(f'postgresql://postgres:{POSTGRES_PASSWORD}@localhost:5432/mydb')
 
+df = pd.read_csv(r'C:\Users\sakal.mon\OneDrive - Ellume\Documents\Git\postgres\6171-ASM-00000546_CEQ0178.csv', header=2, names=renamed_columns)
 
-
-cur.close()
-conn.close()
+df.to_sql('ceq0178', engine, if_exists='append')
