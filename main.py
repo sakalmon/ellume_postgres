@@ -32,8 +32,6 @@ CEQ_MAP = {
     }
 }
 
-pattern = re.compile(r'-|\s|[.]')
-
 try:
     conn = psycopg2.connect(host="127.0.0.1", database="mydb", user="postgres",\
                             port="5432", password=POSTGRES_PASSWORD)
@@ -44,11 +42,15 @@ cur = conn.cursor()
 
 engine = create_engine(f'postgresql://postgres:{POSTGRES_PASSWORD}@localhost:5432/mydb')
 
+pattern = re.compile(r'-|\s|[.]')
+
 for file in os.listdir(CSV_DIR):
     if file.startswith('6171-ASM') and file.endswith('.csv'):
         renamed_columns = []
 
-        df = pd.read_csv(os.path.join(CSV_DIR, file), header=2)
+        df = pd.read_csv(os.path.join(CSV_DIR, file), header=2, parse_dates=True)
+        df['Start'] = pd.to_datetime(df['Start'])
+        df['Finish'] = pd.to_datetime(df['Finish'])
 
         columns = list(df.columns)
 
@@ -70,12 +72,7 @@ for file in os.listdir(CSV_DIR):
         renamed_columns = ' VARCHAR(50), '.join(renamed_columns) + ' VARCHAR(50)'
         table = file.replace('-', '_')
         table = table[:-4]
-        # sql = (f'CREATE TABLE "{table}"({renamed_columns});')
 
-        # cur.execute(sql)
-        # conn.commit()
-        # cur.close()
-        # conn.close()
         print(f'Adding to table: {table}')
         df.to_sql(table, engine, if_exists='append', index=False)
         
