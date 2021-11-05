@@ -18,13 +18,12 @@ for file in os.listdir(CSV_DIR):
         for column in header.columns:
             df[column] = header[column][0]
 
-        print(df.iloc[:,-15:])
+        df['Start'] = pd.to_datetime(df['Start'])
+        df['Finish'] = pd.to_datetime(df['Finish'])
+        df['Product Expiry'] = pd.to_datetime(df['Product Expiry'])
 
-        # df = pd.read_csv(os.path.join(CSV_DIR, file), header=2)
-        # df['Start'] = pd.to_datetime(df['Start'])
-        # df['Finish'] = pd.to_datetime(df['Finish'])
+        df.to_sql("results", engine, if_exists='append')
 
-        # columns = list(df.columns)
 
         
         
