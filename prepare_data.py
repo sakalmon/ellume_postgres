@@ -15,6 +15,7 @@ for file in os.listdir(CSV_DIR):
 
         df = pd.read_csv(os.path.join(CSV_DIR, file), header=2)
 
+        # Add header columns to dataframe
         for column in header.columns:
             df[column] = header[column][0]
 
